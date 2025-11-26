@@ -36,7 +36,9 @@ CREATE TABLE `users` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Default admin user (password: admin123)
+-- Default admin user (password: password)
+-- ⚠️ IMPORTANT: Change this password immediately after first login!
+-- The hash below is for "password" - you must update it via admin panel
 INSERT INTO `users` (`username`, `email`, `password`, `role`, `full_name`, `status`) VALUES
 ('admin', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 'Administrator', 'active');
 

@@ -1,7 +1,8 @@
 <?php
 /**
  * Database Configuration
- * Update these settings to match your Hostinger shared hosting database credentials
+ * ⚠️ IMPORTANT: Update these settings before deployment!
+ * Update these values to match your Hostinger shared hosting database credentials
  */
 
 // Database Host - Usually 'localhost' for shared hosting
@@ -10,10 +11,12 @@ define('DB_HOST', 'localhost');
 // Database Name - Create this in Hostinger hPanel
 define('DB_NAME', 'coupon_website');
 
+// ⚠️ CHANGE THESE VALUES before deploying to production!
 // Database Username - Created in Hostinger hPanel
 define('DB_USER', 'root');
 
 // Database Password - Set in Hostinger hPanel
+// ⚠️ Never use empty password in production!
 define('DB_PASS', '');
 
 // Database Charset
