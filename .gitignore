@@ -1,0 +1,44 @@
+# Uploads (keep structure, ignore actual uploads)
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment files (if you add them later)
+.env
+.env.local
+.env.*.local
+
+# Backup files
+*.bak
+*.backup
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+
+# Cache
+/cache/
+
+# Vendor (if using Composer)
+/vendor/
+
+# Node modules (if using npm)
+/node_modules/
+
+# Compiled files
+*.compiled.php
