@@ -14,7 +14,10 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Detect scheme and base path for shared hosting/subdirectories
-$trustedProxyIps = array_filter(array_map('trim', explode(',', getenv('TRUSTED_PROXY_IPS') ?: '')));
+$trustedProxyIps = array_filter(
+    array_map('trim', explode(',', getenv('TRUSTED_PROXY_IPS') ?: '')),
+    static fn($ip) => $ip !== ''
+);
 $isTrustedProxy = !empty($trustedProxyIps) && in_array($_SERVER['REMOTE_ADDR'] ?? '', $trustedProxyIps, true);
 $forwardedProto = isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
     ? strtolower(trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'])[0]))
@@ -28,9 +31,8 @@ $hostHeader = preg_replace('/\s+/', '', $hostHeader);
 if ($hostname !== 'localhost' && !filter_var($hostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
     $hostname = 'localhost';
 }
-if ($port !== '' && !ctype_digit($port)) {
-    $port = '';
-}
+$portIsValid = $port !== '' && ctype_digit($port) && (int)$port > 0 && (int)$port <= 65535;
+$port = $portIsValid ? $port : '';
 $host = $port ? $hostname . ':' . $port : $hostname;
 $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
 $basePath = $scriptDir === '/' ? '' : rtrim($scriptDir, '/');
