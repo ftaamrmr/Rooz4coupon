@@ -16,7 +16,9 @@ ini_set('display_errors', 1);
 // Detect scheme and base path for shared hosting/subdirectories
 $trustedProxyIps = array_filter(
     array_map('trim', explode(',', getenv('TRUSTED_PROXY_IPS') ?: '')),
-    static fn($ip) => $ip !== ''
+    function ($ip) {
+        return $ip !== '';
+    }
 );
 $isTrustedProxy = !empty($trustedProxyIps) && in_array($_SERVER['REMOTE_ADDR'] ?? '', $trustedProxyIps, true);
 $forwardedProto = isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
@@ -27,7 +29,7 @@ $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $isFor
 $scheme = $isSecure ? 'https' : 'http';
 $hostHeader = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
 $hostHeader = preg_replace('/\s+/', '', $hostHeader);
-[$hostname, $port] = array_pad(explode(':', $hostHeader, 2), 2, '');
+list($hostname, $port) = array_pad(explode(':', $hostHeader, 2), 2, '');
 if ($hostname !== 'localhost' && !filter_var($hostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
     $hostname = 'localhost';
 }
