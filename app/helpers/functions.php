@@ -206,10 +206,9 @@ function url($path = '') {
  */
 function stripBasePath($path) {
     $parsedPath = parse_url($path, PHP_URL_PATH);
-    if ($parsedPath === false || $parsedPath === null) {
-        $requestPath = $path ?: '/';
-    } else {
-        $requestPath = $parsedPath;
+    $requestPath = $parsedPath ?: ($path ?: '/');
+    if ($requestPath === '') {
+        return '/';
     }
     if (!empty(BASE_PATH) && strpos($requestPath, BASE_PATH) === 0) {
         $requestPath = substr($requestPath, strlen(BASE_PATH));

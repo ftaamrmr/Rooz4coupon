@@ -31,6 +31,9 @@ $hostHeader = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
 $hostHeader = preg_replace('/\s+/', '', $hostHeader);
 list($hostname, $port) = array_pad(explode(':', $hostHeader, 2), 2, '');
 if ($hostname !== 'localhost' && !filter_var($hostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+    if (!empty($hostHeader)) {
+        error_log('Invalid host header: ' . $hostHeader);
+    }
     $hostname = 'localhost';
 }
 $portIsValid = $port !== '' && ctype_digit($port) && (int)$port > 0 && (int)$port <= 65535;
