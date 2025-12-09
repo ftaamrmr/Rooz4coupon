@@ -14,8 +14,11 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Detect scheme and base path for shared hosting/subdirectories
-$isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+$forwardedProto = isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
+    ? strtolower(trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'])[0]))
+    : '';
+$isForwardedSecure = !empty($_SERVER['HTTP_X_FORWARDED_HOST']) && $forwardedProto === 'https';
+$isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $isForwardedSecure;
 $scheme = $isSecure ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));

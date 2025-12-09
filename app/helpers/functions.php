@@ -194,7 +194,11 @@ function upload($path) {
  * Generate URL
  */
 function url($path = '') {
-    return rtrim(SITE_URL, '/') . '/' . ltrim($path, '/');
+    $base = rtrim(SITE_URL, '/');
+    if ($path === '' || $path === '/') {
+        return $base . '/';
+    }
+    return $base . '/' . ltrim($path, '/');
 }
 
 /**
