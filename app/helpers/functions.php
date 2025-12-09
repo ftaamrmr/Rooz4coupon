@@ -202,6 +202,17 @@ function url($path = '') {
 }
 
 /**
+ * Strip configured base path from a request path
+ */
+function stripBasePath($path) {
+    $requestPath = parse_url($path, PHP_URL_PATH) ?? '/';
+    if (!empty(BASE_PATH) && strpos($requestPath, BASE_PATH) === 0) {
+        $requestPath = substr($requestPath, strlen(BASE_PATH));
+    }
+    return '/' . ltrim($requestPath, '/');
+}
+
+/**
  * Pagination helper
  */
 function paginate($currentPage, $totalPages, $baseUrl) {
@@ -301,11 +312,7 @@ function generateMetaTags($title = '', $description = '', $image = '', $type = '
     $fullTitle = $title ? $title . ' | ' . $siteTitle : $siteTitle;
     $desc = $description ?: getSetting('meta_description');
     $img = $image ?: getSetting('og_image');
-    $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
-    if (!empty(BASE_PATH) && strpos($requestPath, BASE_PATH) === 0) {
-        $requestPath = substr($requestPath, strlen(BASE_PATH));
-        $requestPath = '/' . ltrim($requestPath, '/');
-    }
+    $requestPath = stripBasePath($_SERVER['REQUEST_URI'] ?? '/');
     $fullUrl = rtrim(SITE_URL, '/') . $requestPath;
     
     $html = '<title>' . e($fullTitle) . '</title>' . "\n";

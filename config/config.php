@@ -14,13 +14,19 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Detect scheme and base path for shared hosting/subdirectories
+$trustedProxyIps = array_filter(array_map('trim', explode(',', getenv('TRUSTED_PROXY_IPS') ?: '')));
+$isTrustedProxy = !empty($trustedProxyIps) && in_array($_SERVER['REMOTE_ADDR'] ?? '', $trustedProxyIps, true);
 $forwardedProto = isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
     ? strtolower(trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'])[0]))
     : '';
-$isForwardedSecure = $forwardedProto === 'https';
+$isForwardedSecure = $isTrustedProxy && $forwardedProto === 'https';
 $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $isForwardedSecure;
 $scheme = $isSecure ? 'https' : 'http';
-$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
+$host = preg_replace('/[^A-Za-z0-9\.\-:]/', '', $host);
+if ($host === '') {
+    $host = 'localhost';
+}
 $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
 $basePath = $scriptDir === '/' ? '' : rtrim($scriptDir, '/');
 
