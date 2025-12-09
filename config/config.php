@@ -17,7 +17,7 @@ ini_set('display_errors', 1);
 $forwardedProto = isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
     ? strtolower(trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'])[0]))
     : '';
-$isForwardedSecure = !empty($_SERVER['HTTP_X_FORWARDED_HOST']) && $forwardedProto === 'https';
+$isForwardedSecure = $forwardedProto === 'https';
 $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $isForwardedSecure;
 $scheme = $isSecure ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';

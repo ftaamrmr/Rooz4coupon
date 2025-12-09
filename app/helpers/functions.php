@@ -301,6 +301,12 @@ function generateMetaTags($title = '', $description = '', $image = '', $type = '
     $fullTitle = $title ? $title . ' | ' . $siteTitle : $siteTitle;
     $desc = $description ?: getSetting('meta_description');
     $img = $image ?: getSetting('og_image');
+    $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+    if (!empty(BASE_PATH) && strpos($requestPath, BASE_PATH) === 0) {
+        $requestPath = substr($requestPath, strlen(BASE_PATH));
+        $requestPath = '/' . ltrim($requestPath, '/');
+    }
+    $fullUrl = rtrim(SITE_URL, '/') . $requestPath;
     
     $html = '<title>' . e($fullTitle) . '</title>' . "\n";
     $html .= '<meta name="description" content="' . e($desc) . '">' . "\n";
@@ -310,7 +316,7 @@ function generateMetaTags($title = '', $description = '', $image = '', $type = '
     $html .= '<meta property="og:title" content="' . e($fullTitle) . '">' . "\n";
     $html .= '<meta property="og:description" content="' . e($desc) . '">' . "\n";
     $html .= '<meta property="og:type" content="' . $type . '">' . "\n";
-    $html .= '<meta property="og:url" content="' . e(SITE_ORIGIN . ($_SERVER['REQUEST_URI'] ?? '/')) . '">' . "\n";
+    $html .= '<meta property="og:url" content="' . e($fullUrl) . '">' . "\n";
     if ($img) {
         $html .= '<meta property="og:image" content="' . e($img) . '">' . "\n";
     }
@@ -324,7 +330,7 @@ function generateMetaTags($title = '', $description = '', $image = '', $type = '
     }
     
     // Canonical URL
-    $html .= '<link rel="canonical" href="' . e(SITE_ORIGIN . ($_SERVER['REQUEST_URI'] ?? '/')) . '">' . "\n";
+    $html .= '<link rel="canonical" href="' . e($fullUrl) . '">' . "\n";
     
     return $html;
 }
