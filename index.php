@@ -20,8 +20,9 @@ $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $uri = parse_url($requestUri, PHP_URL_PATH);
 
 // Remove base path if needed (for subdirectory installations)
-$basePath = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
-$uri = substr($uri, strlen($basePath));
+if (!empty(BASE_PATH) && strpos($uri, BASE_PATH) === 0) {
+    $uri = substr($uri, strlen(BASE_PATH));
+}
 $uri = trim($uri, '/');
 
 // Initialize and dispatch router

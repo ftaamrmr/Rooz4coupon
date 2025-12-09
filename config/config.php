@@ -13,8 +13,17 @@ if (session_status() === PHP_SESSION_NONE) {
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Site URL - Update this for your hosting
-define('SITE_URL', 'http://' . ($_SERVER['HTTP_HOST'] ?? 'localhost'));
+// Detect scheme and base path for shared hosting/subdirectories
+$isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+$scheme = $isSecure ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+$basePath = $scriptDir === '/' ? '' : rtrim($scriptDir, '/');
+
+define('BASE_PATH', $basePath);
+define('SITE_ORIGIN', $scheme . '://' . $host);
+define('SITE_URL', SITE_ORIGIN . BASE_PATH);
 define('ADMIN_URL', SITE_URL . '/admin');
 
 // Directory paths

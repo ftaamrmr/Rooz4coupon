@@ -180,21 +180,21 @@ function breadcrumbs($items) {
  * Get asset URL
  */
 function asset($path) {
-    return SITE_URL . '/public/' . ltrim($path, '/');
+    return rtrim(SITE_URL, '/') . '/public/' . ltrim($path, '/');
 }
 
 /**
  * Get upload URL
  */
 function upload($path) {
-    return SITE_URL . '/public/uploads/' . ltrim($path, '/');
+    return rtrim(SITE_URL, '/') . '/public/uploads/' . ltrim($path, '/');
 }
 
 /**
  * Generate URL
  */
 function url($path = '') {
-    return SITE_URL . '/' . ltrim($path, '/');
+    return rtrim(SITE_URL, '/') . '/' . ltrim($path, '/');
 }
 
 /**
@@ -306,7 +306,7 @@ function generateMetaTags($title = '', $description = '', $image = '', $type = '
     $html .= '<meta property="og:title" content="' . e($fullTitle) . '">' . "\n";
     $html .= '<meta property="og:description" content="' . e($desc) . '">' . "\n";
     $html .= '<meta property="og:type" content="' . $type . '">' . "\n";
-    $html .= '<meta property="og:url" content="' . e($_SERVER['REQUEST_URI']) . '">' . "\n";
+    $html .= '<meta property="og:url" content="' . e(SITE_ORIGIN . ($_SERVER['REQUEST_URI'] ?? '/')) . '">' . "\n";
     if ($img) {
         $html .= '<meta property="og:image" content="' . e($img) . '">' . "\n";
     }
@@ -320,7 +320,7 @@ function generateMetaTags($title = '', $description = '', $image = '', $type = '
     }
     
     // Canonical URL
-    $html .= '<link rel="canonical" href="' . e(SITE_URL . $_SERVER['REQUEST_URI']) . '">' . "\n";
+    $html .= '<link rel="canonical" href="' . e(SITE_ORIGIN . ($_SERVER['REQUEST_URI'] ?? '/')) . '">' . "\n";
     
     return $html;
 }
