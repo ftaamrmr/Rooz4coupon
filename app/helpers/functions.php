@@ -205,7 +205,8 @@ function url($path = '') {
  * Strip configured base path from a request path
  */
 function stripBasePath($path) {
-    $requestPath = parse_url($path, PHP_URL_PATH) ?? '/';
+    $parsedPath = parse_url($path, PHP_URL_PATH);
+    $requestPath = ($parsedPath !== false && $parsedPath !== null) ? $parsedPath : ($path ?: '/');
     if (!empty(BASE_PATH) && strpos($requestPath, BASE_PATH) === 0) {
         $requestPath = substr($requestPath, strlen(BASE_PATH));
     }

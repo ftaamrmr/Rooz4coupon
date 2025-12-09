@@ -22,11 +22,16 @@ $forwardedProto = isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
 $isForwardedSecure = $isTrustedProxy && $forwardedProto === 'https';
 $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $isForwardedSecure;
 $scheme = $isSecure ? 'https' : 'http';
-$host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
-$host = preg_replace('/[^A-Za-z0-9\.\-:]/', '', $host);
-if ($host === '') {
-    $host = 'localhost';
+$hostHeader = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
+$hostHeader = preg_replace('/\s+/', '', $hostHeader);
+[$hostname, $port] = array_pad(explode(':', $hostHeader, 2), 2, '');
+if ($hostname !== 'localhost' && !filter_var($hostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+    $hostname = 'localhost';
 }
+if ($port !== '' && !ctype_digit($port)) {
+    $port = '';
+}
+$host = $port ? $hostname . ':' . $port : $hostname;
 $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
 $basePath = $scriptDir === '/' ? '' : rtrim($scriptDir, '/');
 
